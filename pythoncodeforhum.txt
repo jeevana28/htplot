@@ -1,26 +1,53 @@
 import serial
-import time
-import mathplotlib.pyplot
+import time 
+import matplotlib.pyplot as plt
+from drawnow import *
+import math
 
-humdata=serial.Serial('com3',9600)
-time.sleep(2)
+plt.ion()
+humdata=serial.Serial('COM3',9600)
+#time.sleep(2)
 Time=0
 humy=[]
+tempy=[]
 timex=[0]
-while(1):
-    print.humdata.readline()
-    hum=humdata.readline()
-    Hum=float(hum)
-    humy.append(Hum)
-    
-    x=timex
-    y=humy
-    plt.plot(x,y)
+
+
+def plotg():
+    plt.plot(timex,humy,label='humidity', color='b')
+    plt.xlabel('time in min')
+    plt.ylabel('relative humidity')
+    plt.title('humidity and temp variation with time')
+    plt2=plt.twinx() 
+    plt2.plot(timex,tempy,label='temp',color='y')
+    plt.ylabel('temperature')
     plt.show()
-    
-    %matplotlib inline
-    
-    time.sleep(2)
-    Time=Time+2
-    timex.append(Time)
-    
+
+
+while 1:
+    print(humdata.readline())
+    hum=humdata.readline()
+    hum =(hum[slice(0,11,1)])
+    print(hum)
+    data=hum.split()
+    Hum=float(data[0])
+    Temp=float(data[1])
+    if(math.isnan(Hum)):
+        Time=Time+4
+        #time.sleep(2)
+        continue
+    print(Hum)
+    print(Temp)
+    #temp=(hum[slice(6,-4,1)])
+    #print(temp)
+    #Hum=float(hum)
+    humy.append(Hum)
+    tempy.append(Temp)
+    #x=timex
+    #y=humy
+   # plt.plot(x,y)
+   # plt.show()
+    drawnow(plotg)
+    #time.sleep(2)
+    Time=Time+4
+    timex.append(Time/60)
